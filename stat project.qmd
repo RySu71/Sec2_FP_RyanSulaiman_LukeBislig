@@ -1,0 +1,65 @@
+---
+title: "stat project"
+format: pdf
+editor: visual
+---
+
+## Code
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+
+data <- read.csv("C:/Users/judeb/AppData/Local/Microsoft/Windows/INetCache/IE/6YET17W0/nces330_20[1].csv")
+n_rows <- nrow(data)
+
+head(data)
+data_tuition <- data %>%
+  filter(Expense == "Fees/Tuition")
+
+head(data_tuition)
+
+data_tuition$year <- as.numeric(data_tuition$Year)
+
+avg_cost_by_year <- data_tuition %>%
+  group_by(Year) %>%
+  summarise(avg_tuition = mean(Value, na.rm = TRUE))
+
+ggplot(avg_cost_by_year, aes(x = Year, y = avg_tuition)) +
+  geom_line(size = 1) +
+  geom_point() +
+  theme_minimal() +
+  labs(
+    title = "Average Tuition Costs Over Time",
+    x = "Year",
+    y = "Average Tuition ($)"
+  ) +
+  scale_x_continuous(
+    breaks = seq(
+      min(avg_cost_by_year$Year),
+      max(avg_cost_by_year$Year),
+      by = 1
+    )
+  )
+
+stats <- data.frame(
+  Statistic = c("Mean", "Median", "Minimum", "Maximum"),
+  Value = c(
+    mean(data$Value, na.rm = TRUE),
+    median(data$Value, na.rm = TRUE),
+    min(data$Value, na.rm = TRUE),
+    max(data$Value, na.rm = TRUE)
+  )
+)
+
+stats
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
